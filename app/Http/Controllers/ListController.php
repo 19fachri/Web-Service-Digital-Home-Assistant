@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ListModel;
 use App\Status;
+use App\Aktivitas;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -38,13 +39,16 @@ class ListController extends Controller
      */
     public function store(Request $request)
     {
-        ListModel::insert($request->all());
-	$data = "perintah $request->kata sedang diproses";
-//	while($data == null){
-//		$dataa=Status::first();
-//		$data=$dataa;
-//		$dataaa=DB::delete('delete from Status limit 1');
-//	}
+	$cek = Aktivitas::where("perintah", "=", $request->kata)->first();
+	if($cek){
+		$dt = new ListModel;
+		$dt->id_alat = $cek->id_alat;
+		$dt->kata = $cek->sinyal;
+		$dt->save();
+		$data = "perintah $request->kata sedang diproses";
+	}else{
+		$data = "perintah $request->kata belum terdaftar";
+	}
         return $data;
     }
 
@@ -54,12 +58,17 @@ class ListController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($data)
+    public function show($id)
     {
-        //ListModel::insert($data);
-        $hasil = new ListModel;
-        $hasil->kata = $data;
-        $hasil->save();
+        $data = ListModel::where('id_alat','=',$id)->first();
+        if($data){
+			$perintah = $data->kata;
+			$q = 'DELETE FROM List where id_alat = ? LIMIT 1';
+			DB::delete($q, [$id]);
+		}else{
+			$perintah = '';
+		}
+        return $perintah;
     }
 
     /**

@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class ListModel extends Model
 {
     protected $table = "List";
-    protected $fillable = ['kata'];
+    protected $fillable = ['id_alat','kata'];
 }

@@ -14,6 +14,7 @@ class CreateTableList extends Migration
     public function up()
     {
         Schema::create('List', function (Blueprint $table) {
+	    $table->integer('id_alat');
             $table->String('kata');
             $table->timestamps();
         });
